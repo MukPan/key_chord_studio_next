@@ -1,0 +1,34 @@
+-- CreateTable
+CREATE TABLE "User" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "ChordGroup" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "userId" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "ChordGroup_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Chord" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "chordGroupId" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    CONSTRAINT "Chord_chordGroupId_fkey" FOREIGN KEY ("chordGroupId") REFERENCES "ChordGroup" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Key" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "chordId" INTEGER NOT NULL,
+    "keyIndex" INTEGER NOT NULL,
+    CONSTRAINT "Key_chordId_fkey" FOREIGN KEY ("chordId") REFERENCES "Chord" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

@@ -2,14 +2,14 @@
 import {redirect} from "next/navigation";
 import {registUser} from "../../utils/db/user";
 
-export default function Home({params, searchParams}) {
+export default async function Home({params, searchParams}) {
   if(typeof(window) === "object") {
     document.body.style.backgroundColor = "rgb(31,31,58)"; //"rgb(0,5,58)";
   }
 
   //表示メッセージを作成
   let customMes = <div style={{height:"50px"}}></div>;
-  const regist = searchParams.regist;
+  const regist = (await searchParams).regist;
   if (regist === "duplication") {
     customMes = <p
       style={{

@@ -16,3 +16,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ```bash
 npx prisma migrate dev --name init
 ```
+
+cookieを有効にしてください。

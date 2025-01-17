@@ -87,7 +87,6 @@ export default function PianoContext(props) { //鍵盤を押すことでコー�
           headlineTextStyle={headlineTextStyle}
           predictChordDisplayStyle={predictChordDisplayStyle}
         />
-
       </div>
     </IsTempContext.Provider>
   )

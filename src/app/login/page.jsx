@@ -1,7 +1,8 @@
 import {isPossibleToLogin, registUser} from "../../utils/db/user";
 import {redirect} from "next/navigation";
+import {setLoginUser} from "../../utils/db/cookie";
 
-export default function Home({params, searchParams}) {
+export default async function Home({searchParams}) {
   if(typeof(window) === "object") {
     document.body.style.backgroundColor = "rgb(31,31,58)"; //"rgb(0,5,58)";
   }
@@ -9,7 +10,7 @@ export default function Home({params, searchParams}) {
   //表示メッセージを作成
   let customMes = <div style={{height:"50px"}}></div>;
 
-  const regist = searchParams.regist;
+  const regist = (await searchParams).regist;
   if (regist === "ok") {
     customMes = <p
       style={{
@@ -63,6 +64,8 @@ export default function Home({params, searchParams}) {
       redirect(`/login?regist=${result.error}`);
     }
     //登録成功
+    //セッションに保存
+    setLoginUser(userName);
     redirect('/home');
   }
 

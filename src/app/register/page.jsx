@@ -1,5 +1,6 @@
-import {isPossibleToLogin, registUser} from "../../utils/db/user";
+// import {isPossibleToLogin} from "../../utils/db/login";
 import {redirect} from "next/navigation";
+import {registUser} from "../../utils/db/user";
 
 export default function Home({params, searchParams}) {
   if(typeof(window) === "object") {
@@ -8,18 +9,17 @@ export default function Home({params, searchParams}) {
 
   //表示メッセージを作成
   let customMes = <div style={{height:"50px"}}></div>;
-
   const regist = searchParams.regist;
-  if (regist === "ok") {
+  if (regist === "duplication") {
     customMes = <p
       style={{
-        color: "#08ff00",
+        color: "#ff0000",
         fontSize: "20px",
         marginTop: "20px",
       }}>
-      アカウントの登録が完了しました。</p>;
+      このユーザ名は既に使われています。</p>;
   }
-  if (regist === "empty") {
+  else if (regist === "empty") {
     customMes = <p
       style={{
         color: "#ff0000",
@@ -28,15 +28,14 @@ export default function Home({params, searchParams}) {
       }}>
       ユーザ名とパスワードの両方を入力してください。</p>;
   }
-  else if (regist === "notfound") {
+  else if (regist === "short") {
     customMes = <p
       style={{
         color: "#ff0000",
         fontSize: "20px",
         marginTop: "20px",
       }}>
-      ユーザ名かパスワードが間違っています。</p>;
-
+      ユーザ名かパスワードが短すぎます。</p>;
   }
   else if (regist === "unkown") {
     customMes = <p
@@ -48,24 +47,21 @@ export default function Home({params, searchParams}) {
       予期しないエラーが発生しました。</p>;
   }
 
-  //ログイン処理
-  const handleLogin = async (form) => {
+  //新規登録処理
+  const handleRegist = async (form) => {
     "use server"; //SSR
-    // event.preventDefault();
-    // const form = new FormData(event.currentTarget);
     const userName = form.get("userName") || "";
     const password = form.get("password") || "";
     console.log(userName, password);
-    //ログイン可能か確認
-    const result = await isPossibleToLogin(userName, password);
+    //ユーザ登録可能か確認
+    const result = await registUser(userName, password);
     //エラー処理
     if (!result.ok) {
-      redirect(`/login?regist=${result.error}`);
+      redirect(`/register?regist=${result.error}`);
     }
     //登録成功
-    redirect('/home');
+    redirect('/login?regist=ok');
   }
-
 
 
   const loginPageStyle = {
@@ -127,34 +123,32 @@ export default function Home({params, searchParams}) {
 
   const h2Style = {
     color: "rgba(50,50,64,0.7)",
-    // fontWeight: "bold",
   }
 
   return (
     <div style={loginPageStyle}>
       <span style={titleStyle}>Key Chord Studio</span>
-      <form style={loginFormStyle} action={handleLogin}>
-        <h2 style={h2Style}>ログイン</h2>
+      <form style={loginFormStyle} action={handleRegist}>
+        <h2 style={h2Style}>新規登録</h2>
         <input
           style={inputFormStyle}
           type="text"
           name="userName"
           defaultValue=""
-          placeholder="ユーザ名"/>
+          placeholder="ユーザ名 ※2文字以上"/>
         <input
           style={inputFormStyle}
           type="password"
           name="password"
           defaultValue=""
-          placeholder="パスワード"/>
+          placeholder="パスワード ※6文字以上"/>
         <br/>
         <input
           type="submit"
-          value="ログイン"
+          value="新規登録"
           style={loginBtnStyle}/>
-        <a style={registerLinkStyle} href="/register">登録</a>
+        <a style={registerLinkStyle} href="/login">既にアカウントをお持ちの方</a>
       </form>
-      {/*メッセージ表示*/}
       {customMes}
     </div>
   );

@@ -32,3 +32,6 @@ CREATE TABLE "Key" (
     "keyIndex" INTEGER NOT NULL,
     CONSTRAINT "Key_chordId_fkey" FOREIGN KEY ("chordId") REFERENCES "Chord" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_name_key" ON "User"("name");

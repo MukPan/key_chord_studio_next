@@ -2,13 +2,14 @@ import { Component, useContext } from 'react'
 // import { useGetSoundPlayer } from "../../hooks/useGetSoundPlayer.tsx";
 import { useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import {KeySelectedContext, LinedDistsContext} from "../../../app/home/page";
+import {ChordGroupContext, KeySelectedContext, LinedDistsContext} from "../../../app/home/page";
 import {createChordGroup} from "../../db/chords";
 
 //再生欄
 export const PlaybackSection = () => {
   // console.log("Headerレンダリング");
   const { linedDistsArr, setLinedDistsArr } = useContext(LinedDistsContext);
+  const { chordGroupList, setChordGroupList } = useContext(ChordGroupContext);
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext); //本
 
 
@@ -30,7 +31,7 @@ export const PlaybackSection = () => {
   const keypressPlay = (key/* :any */) => {
     if(key.key == 'S' || key.key== 's'){
       // console.log('play');
-      playDisplay();
+      playChordGroup();
     }
   }
 
@@ -69,27 +70,30 @@ export const PlaybackSection = () => {
 
   }
 
-  //音鳴らしてるのはここ
-  const playDisplay = () => { //表示されている要素にひとつずつイベントを起こしていく
-    const nowIndexArr = document.getElementsByClassName("DisplayCards"); //今の順番を取得
-    const numOfDisplayCrads = nowIndexArr.length; //今のディスプレイカードの枚数を保持する
-    console.log(nowIndexArr[0].innerHTML);
-    for(let i= 0; i < numOfDisplayCrads; i++) { //DisplayCardを上から順に取得して処理をしていく
-      if (i == 0) { //一個目はすぐに色を変える
+
+  //新:コードグループ再生
+  const playChordGroup = () => {
+    console.log("関数playChordGroup")
+    //現在音を鳴らしているカード
+    const nowIndexArr = document.getElementsByClassName("DisplayCards");
+    for(let i= 0; i < chordGroupList.length; i++) { //DisplayCardを左から順に取得して処理をしていく
+      //始点処理
+      if (i === 0) {
         nowIndexArr[i].style.backgroundColor = "orange";
-        setIsSelectedArr(() => [...linedDistsArr[nowIndexArr[i].innerHTML]]);
-        // console.log();
-      }else if (i < numOfDisplayCrads - 1) { //初回、最終回以外の処理はここ
+        setIsSelectedArr(() => [...chordGroupList[i].dists]);
+      //2〜(n-1)番目処理
+      }else if (i < chordGroupList.length - 1) { //初回、最終回以外の処理はここ
         setTimeout(() => {
           nowIndexArr[i-1].style.backgroundColor = "#FFFFFF";
           nowIndexArr[i].style.backgroundColor = "orange";
-          setIsSelectedArr(() => [...linedDistsArr[nowIndexArr[i].innerHTML]]);
+          setIsSelectedArr(() => [...chordGroupList[i].dists]);
         }, i * 1000); //二つ目は１秒、三つ目は２秒待つ... とすることで１秒ごと動作させる
+      //n番目(終点)処理
       } else { //一番後ろのディスプレイカードの処理
         setTimeout(() => {
           nowIndexArr[i-1].style.backgroundColor = "#FFFFFF";
           nowIndexArr[i].style.backgroundColor = "orange";
-          setIsSelectedArr(() => [...linedDistsArr[nowIndexArr[i].innerHTML]]);
+          setIsSelectedArr(() => [...chordGroupList[i].dists]);
         }, i * 1000); //二つ目は１秒、三つ目は２秒待つ... とすることで１秒ごと動作させる
         setTimeout(() => {
           nowIndexArr[i].style.backgroundColor = "#FFFFFF";
@@ -145,7 +149,8 @@ export const PlaybackSection = () => {
   return (
     <>
       <div style={{marginLeft: "90.79px"}}>
-        <Button variant="success" style={styleButton} onClick={playDisplay}>再生
+        {/*<Button variant="success" style={styleButton} onClick={playDisplay}>再生*/}
+        <Button variant="success" style={styleButton} onClick={playChordGroup}>再生
           <div>sキー</div>
         </Button>
         <Button variant="danger" style={styleButton} onClick={cleanDisplay}>リセット

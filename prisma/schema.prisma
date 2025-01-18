@@ -10,13 +10,14 @@ datasource db {
 //モデルの定義
 model User {
   //PK
-  id        Int          @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   //field
-  name      String       @unique
-  password  String
-  createdAt DateTime     @default(now()) //作成日時の項目
-  updatedAt DateTime     @updatedAt //更新日時の項目
-  chords    ChordGroup[]
+  //重複なし
+  name        String
+  password    String
+  createdAt   DateTime     @default(now()) //作成日時の項目
+  updatedAt   DateTime     @updatedAt //更新日時の項目
+  chordGroups ChordGroup[]
 }
 
 model ChordGroup {
@@ -40,7 +41,7 @@ model Chord {
   chordGroupId Int
   //field
   name         String //コード名
-  chordNotes   Key[]
+  keys         Key[]
 }
 
 model Key {

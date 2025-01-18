@@ -3,13 +3,12 @@ import { Component, useContext } from 'react'
 import { useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
 import {KeySelectedContext, LinedDistsContext} from "../../../app/home/page";
+import {createChordGroup} from "../../db/chords";
 
 //再生欄
 export const PlaybackSection = () => {
   // console.log("Headerレンダリング");
-  // const {PlayFuncs, StopFuncs} = useGetSoundPlayer();
   const { linedDistsArr, setLinedDistsArr } = useContext(LinedDistsContext);
-  // const { sortChordArr, setSortChordArr } = useContext(SortChordArrContext);
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext); //本
 
 
@@ -59,7 +58,6 @@ export const PlaybackSection = () => {
   },)
 
 
-
   const cleanDisplay = () =>{ //表示されている要素を全て消す
     const nowIndexArr = document.getElementsByClassName("DisplayCards"); //今の順番を取得
     const NumOfDisplayCrads = nowIndexArr.length; //今のディスプレイカードの枚数を保持する
@@ -75,7 +73,7 @@ export const PlaybackSection = () => {
   const playDisplay = () => { //表示されている要素にひとつずつイベントを起こしていく
     const nowIndexArr = document.getElementsByClassName("DisplayCards"); //今の順番を取得
     const numOfDisplayCrads = nowIndexArr.length; //今のディスプレイカードの枚数を保持する
-    console.log(linedDistsArr);
+    console.log(nowIndexArr[0].innerHTML);
     for(let i= 0; i < numOfDisplayCrads; i++) { //DisplayCardを上から順に取得して処理をしていく
       if (i == 0) { //一個目はすぐに色を変える
         nowIndexArr[i].style.backgroundColor = "orange";
@@ -98,6 +96,16 @@ export const PlaybackSection = () => {
         }, (i+1) * 1000);
       }
     }
+  }
+
+  //データを保存
+  const saveDisplayChords = () => {
+    console.log(linedDistsArr);
+    const nowIndexArr = document.getElementsByClassName("DisplayCards"); //今の順番を取得
+    createChordGroup(linedDistsArr);
+
+
+
   }
 
   const playChordDisplayStyle = {
@@ -143,7 +151,7 @@ export const PlaybackSection = () => {
         <Button variant="danger" style={styleButton} onClick={cleanDisplay}>リセット
           <div>cキー</div>
         </Button>
-        <Button variant="danger" style={styleButton} onClick={cleanDisplay}>保存
+        <Button variant="danger" style={styleButton} onClick={saveDisplayChords}>保存
           <div>キー</div>
         </Button>
       </div>

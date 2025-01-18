@@ -100,9 +100,8 @@ export const PlaybackSection = () => {
 
   //データを保存
   const saveDisplayChords = () => {
-    // console.log(linedDistsArr);
     const nowIndexArr = document.getElementsByClassName("DisplayCards"); //今の順番を取得
-    // createChordGroup(linedDistsArr);
+    createChordGroup(chordGroupList);
 
 
 

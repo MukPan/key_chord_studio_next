@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-loop-func */
-import { IsTempContext } from "./PianoContext.jsx"
-import { useEffect, useContext, useState } from "react";
+import {IsTempContext} from "./PianoContext.jsx"
+import {useContext, useEffect, useState} from "react";
 import {ChordGroupContext, KeySelectedContext, KeyTempSelectedContext} from "../../../app/home/page";
 
 
@@ -14,6 +14,9 @@ export const ChordDisplay = (props) => {
   } = props;
 
   let DraggingElem;
+
+  //ドラッグ中のindexを保存
+  let prevDragIndex;
 
   const { chordGroupList, setChordGroupList } = useContext(ChordGroupContext);
 
@@ -459,7 +462,11 @@ export const ChordDisplay = (props) => {
 
   /*dragに関する4つの関数を付与する関数*/
   const addDragFuncs = (elem) => { //4つの関数を付与
+
     elem.ondragstart = () => { //ドラッグスタート
+      //ドラッグする要素のインデックスを取得・保存
+      prevDragIndex = getNowIndex(elem);
+      console.log("prevDragIndex: " + prevDragIndex);
       event.dataTransfer.setData('text/plain', event.target.id);
       DraggingElem = elem;
     };
@@ -475,13 +482,35 @@ export const ChordDisplay = (props) => {
 
     elem.ondrop = () => {
       event.preventDefault();
-      // let id = event.dataTransfer.getData('text/plain');
+      //入れ替え
       const listElem = document.getElementById("lined-chords");
-      // console.log(listElem);
-      // console.log(elem);
       listElem.insertBefore(DraggingElem, elem);
       elem.style.marginLeft = '';
+
+      //ドラッグ後の要素のインデックスを取得
+      //ドロップ位置に変化がないとき、-1をしない
+      const nowIndex = getNowIndex(elem) - ((DraggingElem === elem) ? 0 : 1);
+      console.log(nowIndex);
+
+      //previndexの要素を削除し、nowindexに挿入
+      setChordGroupList((prev) => {
+        const newChordGroupList = [...prev];
+        //削除
+        const [removed] = newChordGroupList.splice(prevDragIndex, 1);
+        //挿入
+        newChordGroupList.splice(nowIndex, 0, removed);
+        return newChordGroupList;
+      });
     };
+  }
+
+  /*自身が今何番目か取得する関数*/
+  const getNowIndex = (chordElem) => {
+    //親要素を取得
+    const listElem = document.getElementById("lined-chords");
+    //全ての子要素を取り出す
+    const listElemChildren = Array.from(listElem.children);
+    return listElemChildren.findIndex(el => el === chordElem);
   }
 
   /*再生欄のコードをホバー*/
@@ -531,22 +560,18 @@ export const ChordDisplay = (props) => {
     liElem.appendChild(createDiv);
     const dummyElem = document.getElementById("dummy"); //ダミー取得
     dummyElem.before(liElem); //ダミーの前に追加
-    document.querySelectorAll("#lined-chords li").forEach(addDragFuncs); //drag関数を付与、更新
     //////
-    // targetOfHeader.appendChild(createDiv); //header要素に子要素として作ったspanを追加
-    //setLinedDistsArr((prev) => [...prev, Dists[thisStruct].map(dist => dist + RootsArr[thisRoot])]);
-    // setLinedDistsArr((prev) => [...prev, isTempSelectedArr]);
-    //旧
-    // setLinedDistsArr((prev) => {
-    //   prev[chord] = [...isTempSelectedArr]; //ここprevに"C"とかの文字例入ってる
-    //   return prev;
-    // });
-    //新
+
+    //1つのコードを保存
+    const thisChordIndex = chordGroupList.length;
     setChordGroupList((prev) => {
       prev = [...prev, {chord: chord, dists: isTempSelectedArr}];
       console.log(prev);
       return prev;
     });
+
+    //ドラッグ関数を付与
+    document.querySelectorAll("#lined-chords li").forEach(addDragFuncs); //drag関数を付与、更新
   }
 
   hitChords.forEach((chord, i) => {

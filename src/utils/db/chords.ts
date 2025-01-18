@@ -22,7 +22,7 @@ type ChordGroup = {
 
 //ユーザを登録する関数
 export const createChordGroup = async (rawData: any): Promise<{ ok: boolean, error?: string }> => {
-  // console.log(rawData);
+  console.log(rawData);
 
   // rawData.forEach((chord: any) => {
   //   console.log(chord);

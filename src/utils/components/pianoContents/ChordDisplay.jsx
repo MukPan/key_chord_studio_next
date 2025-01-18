@@ -1,12 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-loop-func */
-// import { KeyTempSelectedContext } from "../../pages/HomePage.jsx"
 import { IsTempContext } from "./PianoContext.jsx"
 import { useEffect, useContext, useState } from "react";
-import {KeySelectedContext, KeyTempSelectedContext, LinedDistsContext} from "../../../app/home/page";
-// import { LinedDistsContext } from "../../pages/HomePage.jsx";
-// import { selectBoxValueContext } from "../../pages/HomePage.jsx";
-// import { sortTypeContext } from "../../pages/HomePage.jsx";
+import {ChordGroupContext, KeySelectedContext, KeyTempSelectedContext} from "../../../app/home/page";
 
 
 export const ChordDisplay = (props) => {
@@ -19,7 +15,7 @@ export const ChordDisplay = (props) => {
 
   let DraggingElem;
 
-  const { linedDistsArr, setLinedDistsArr } = useContext(LinedDistsContext);
+  const { chordGroupList, setChordGroupList } = useContext(ChordGroupContext);
 
   //ルート配列
   const RootsArr = [
@@ -489,10 +485,10 @@ export const ChordDisplay = (props) => {
   }
 
   /*再生欄のコードをホバー*/
-  const hoverSelectedChord = (thisChord) => {
+  const hoverSelectedChord = (thisChord, thisDists) => {
     console.log(thisChord.innerHTML);
     thisChord.style.backgroundColor = "orange";
-    setIsTempSelectedArr(() => [...linedDistsArr[thisChord.innerHTML]]);
+    setIsTempSelectedArr(() => [...thisDists]);
   }
 
   /*ホバー解除*/
@@ -501,8 +497,10 @@ export const ChordDisplay = (props) => {
   }
 
   /*ダブルクリックでフォーカス*/
-  const dbClickSelectedChord = (thisChord) => {
-    setIsSelectedArr(() => [...linedDistsArr[thisChord.innerHTML]]);
+  const dbClickSelectedChord = (thisDists) => {
+    console.log(thisDists);
+    setIsSelectedArr(() => [...thisDists]);
+
   }
 
   /* もう一度再生 */
@@ -522,9 +520,9 @@ export const ChordDisplay = (props) => {
     const createDiv = document.createElement("div"); //ヘッダーに表示する文字ごとにdiv要素を作る
     createDiv.className = "DisplayCards"; //クラス名をDisplayCardsにしてcssでデザインを指定.
     createDiv.innerHTML = chord;
-    createDiv.addEventListener("mouseenter", () => hoverSelectedChord(createDiv));
+    createDiv.addEventListener("mouseenter", () => hoverSelectedChord(createDiv, isTempSelectedArr));
     createDiv.addEventListener("mouseleave", () => nonHoverSelectedChord(createDiv));
-    createDiv.addEventListener("dblclick", () => dbClickSelectedChord(createDiv));
+    createDiv.addEventListener("dblclick", () => dbClickSelectedChord(isTempSelectedArr));
     createDiv.addEventListener("click", () => playThisChord());
     createDiv.addEventListener("contextmenu", () => deleteThisChord(createDiv));
     //////再生欄に追加する作業
@@ -538,8 +536,15 @@ export const ChordDisplay = (props) => {
     // targetOfHeader.appendChild(createDiv); //header要素に子要素として作ったspanを追加
     //setLinedDistsArr((prev) => [...prev, Dists[thisStruct].map(dist => dist + RootsArr[thisRoot])]);
     // setLinedDistsArr((prev) => [...prev, isTempSelectedArr]);
-    setLinedDistsArr((prev) => {
-      prev[chord] = [...isTempSelectedArr];
+    //旧
+    // setLinedDistsArr((prev) => {
+    //   prev[chord] = [...isTempSelectedArr]; //ここprevに"C"とかの文字例入ってる
+    //   return prev;
+    // });
+    //新
+    setChordGroupList((prev) => {
+      prev = [...prev, {chord: chord, dists: isTempSelectedArr}];
+      console.log(prev);
       return prev;
     });
   }

@@ -8,6 +8,7 @@ export const LinedDistsContext = createContext({});
 export const KeySelectedContext = createContext({});
 export const KeyTempSelectedContext = createContext({});
 export const SortChordArrContext = createContext({});
+export const ChordGroupContext = createContext({});
 
 
 export default function Home() {
@@ -17,6 +18,8 @@ export default function Home() {
   const [sortChordArr, setSortChordArr] = useState([]); //ソート用キー配列、上に与える
   const [isSelectedArr, setIsSelectedArr] = useState([]); //本
   const [isTempSelectedArr, setIsTempSelectedArr] = useState([]); //仮
+  // {"C": [0,0,0]}のようなオブジェクトを格納する配列
+  const [chordGroupList, setChordGroupList] = useState([]);
 
 
   return (
@@ -25,8 +28,10 @@ export default function Home() {
         <KeySelectedContext.Provider value={{isSelectedArr, setIsSelectedArr}}>
           <KeyTempSelectedContext.Provider value={{isTempSelectedArr, setIsTempSelectedArr}}>
             <LinedDistsContext.Provider value={{linedDistsArr, setLinedDistsArr}}>
-              <Header/>
-              <PianoContext/>
+              <ChordGroupContext.Provider value={{chordGroupList, setChordGroupList}}>
+                <Header/>
+                <PianoContext/>
+              </ChordGroupContext.Provider>
             </LinedDistsContext.Provider>
           </KeyTempSelectedContext.Provider>
         </KeySelectedContext.Provider>

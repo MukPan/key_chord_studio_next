@@ -1,14 +1,12 @@
 import { Component, useContext } from 'react'
-// import { useGetSoundPlayer } from "../../hooks/useGetSoundPlayer.tsx";
 import { useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import {ChordGroupContext, KeySelectedContext, LinedDistsContext} from "../../../app/home/page";
+import {ChordGroupContext, KeySelectedContext} from "../../../app/home/page";
 import {createChordGroup} from "../../db/chords";
 
 //再生欄
 export const PlaybackSection = () => {
   // console.log("Headerレンダリング");
-  const { linedDistsArr, setLinedDistsArr } = useContext(LinedDistsContext);
   const { chordGroupList, setChordGroupList } = useContext(ChordGroupContext);
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext); //本
 
@@ -65,9 +63,7 @@ export const PlaybackSection = () => {
     for(let i=0; i<NumOfDisplayCrads; i++){
       nowIndexArr[0].remove(); //一番上の要素を消すと、一個下の要素が一番上になる。つまり[0]を消し続ければ良い
     }
-    setLinedDistsArr(() => []);
-    setLinedDistsArr(() => []);
-
+    setChordGroupList(() => []);
   }
 
 
@@ -104,9 +100,9 @@ export const PlaybackSection = () => {
 
   //データを保存
   const saveDisplayChords = () => {
-    console.log(linedDistsArr);
+    // console.log(linedDistsArr);
     const nowIndexArr = document.getElementsByClassName("DisplayCards"); //今の順番を取得
-    createChordGroup(linedDistsArr);
+    // createChordGroup(linedDistsArr);
 
 
 

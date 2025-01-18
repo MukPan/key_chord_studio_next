@@ -538,8 +538,16 @@ export const ChordDisplay = (props) => {
   }
 
   /* コードを削除 */
-  const deleteThisChord = (thisChord) => {
-    thisChord.remove();
+  const deleteThisChord = (thisLiChord) => {
+    //indexを取得
+    const delIndex = getNowIndex(thisLiChord);
+    thisLiChord.remove();
+    //リストからも削除
+    setChordGroupList((prev) => {
+      const newChordGroupList = [...prev];
+      newChordGroupList.splice(delIndex, 1);
+      return newChordGroupList;
+    });
   }
 
   //ディスプレイに追加
@@ -553,7 +561,6 @@ export const ChordDisplay = (props) => {
     createDiv.addEventListener("mouseleave", () => nonHoverSelectedChord(createDiv));
     createDiv.addEventListener("dblclick", () => dbClickSelectedChord(isTempSelectedArr));
     createDiv.addEventListener("click", () => playThisChord());
-    createDiv.addEventListener("contextmenu", () => deleteThisChord(createDiv));
     //////再生欄に追加する作業
     const liElem = document.createElement("li"); //ソート用のリスト、この中に下のdiv要素を追加する
     liElem.draggable = true;
@@ -563,13 +570,14 @@ export const ChordDisplay = (props) => {
     //////
 
     //1つのコードを保存
-    const thisChordIndex = chordGroupList.length;
     setChordGroupList((prev) => {
       prev = [...prev, {chord: chord, dists: isTempSelectedArr}];
       console.log(prev);
       return prev;
     });
 
+    //削除関数を付与
+    createDiv.addEventListener("contextmenu", () => deleteThisChord(liElem));
     //ドラッグ関数を付与
     document.querySelectorAll("#lined-chords li").forEach(addDragFuncs); //drag関数を付与、更新
   }

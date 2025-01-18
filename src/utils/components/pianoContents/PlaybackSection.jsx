@@ -57,11 +57,12 @@ export const PlaybackSection = () => {
   },)
 
 
-  const cleanDisplay = () =>{ //表示されている要素を全て消す
-    const nowIndexArr = document.getElementsByClassName("DisplayCards"); //今の順番を取得
-    const NumOfDisplayCrads = nowIndexArr.length; //今のディスプレイカードの枚数を保持する
-    for(let i=0; i<NumOfDisplayCrads; i++){
-      nowIndexArr[0].remove(); //一番上の要素を消すと、一個下の要素が一番上になる。つまり[0]を消し続ければ良い
+  const cleanDisplay = () => { //表示されている要素を全て消す
+    //親要素lined-chordsを取得
+    const linedChords = document.getElementById("lined-chords");
+    //親要素のid="dummy"以外の子要素を全て削除
+    while (linedChords.firstChild.id !== "dummy") {
+      linedChords.removeChild(linedChords.firstChild);
     }
     setChordGroupList(() => []);
   }

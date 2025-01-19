@@ -1,9 +1,9 @@
-import {getChordGroups} from "../db/chords";
+import {delChordGroup, delChordGroupFromDb, getChordGroups} from "../db/chords";
 import {CSSProperties, useContext, useEffect, useState} from "react";
 import {
   ChordGroupContext,
   KeySelectedContext,
-  KeyTempSelectedContext,
+  KeyTempSelectedContext, NowEditChordGroupIdContext,
   UserChordGroupListContext
 } from "../../app/home/page";
 import Image from "next/image";
@@ -61,19 +61,20 @@ export default function ChordGroupList() {
   const {chordGroup, setChordGroup} = useContext(ChordGroupContext);
   const { isTempSelectedArr, setIsTempSelectedArr} = useContext(KeyTempSelectedContext); //仮
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext);
-
-
+  const { nowEditChordGroupId, setNowEditChordGroupId } = useContext(NowEditChordGroupIdContext);
+  const [updateDb, setUpdateDb] = useState(false);
 
   useEffect(() => {
     getChordGroups().then((res) => {
       //コードグループリストを新規作成
       const newChordGroupList = res.chordGroups;
       setUserChordGroupList((prev) => [...newChordGroupList])
+      console.log(newChordGroupList);
       // chordGroups.forEach((chordGroup) => {
       //   console.log(chordGroup);
       // });
     });
-  }, []);
+  }, [updateDb]);
 
 
 
@@ -85,6 +86,9 @@ export default function ChordGroupList() {
 
     const chordGroupId = chordGroup.id;
     const chords = chordGroup.chords;
+
+    //編集中コードグループとして登録
+    setNowEditChordGroupId(() => chordGroupId);
 
     // console.log(chordGroup.id);
     // console.log(chordGroup.chords);
@@ -114,14 +118,29 @@ export default function ChordGroupList() {
         setIsSelectedArr
       );
     });
-
-
-
-
-
   }
 
+  //コード進行削除
+  const delChordGroup = (chordGroup) => {
+    //確認ダイアログを出す
+    if (!confirm("このコード進行を削除しますか？\nこの操作は取り消せません。")) {
+      console.log("キャンセル");
+      return;
+    }
 
+    //DBから削除
+    delChordGroupFromDb(chordGroup.id).then((res) => {
+      console.log(res);
+      setUpdateDb((prev) => !prev);
+      //アラートを出す
+      alert("コード進行を削除しました。");
+    });
+    // const chordGroupId = chordGroup.id;
+    // const newChordGroupList = userChordGroupList.filter((chordGroup) => {
+    //   return chordGroup.id !== chordGroupId;
+    // });
+    // setUserChordGroupList((prev) => [...newChordGroupList]);
+  }
 
 
   return (
@@ -155,6 +174,16 @@ export default function ChordGroupList() {
                 style={iconStyle}
                 onClick={() => editChordGroup(chordGroup)}
               />
+              {/*削除アイコン*/}
+              <Image
+                width={20}
+                height={20}
+                src="/image/del.png"
+                alt="削除"
+                style={iconStyle}
+                onClick={() => delChordGroup(chordGroup)}
+              />
+
               {/*コード進行名*/}
               <div style={chordGroupNameStyle}>{chordGroup.name}</div>
             </div>

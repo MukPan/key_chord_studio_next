@@ -16,8 +16,80 @@ export interface ChordGroup {
 }
 
 
-//ユーザを登録する関数
+//コードグループを登録する関数
 export const createChordGroup = async (rawChordGroup: any): Promise<{ ok: boolean, error?: string }> => {
+  //新規作成
+  const newChordGroup = getTypeChordGroup(rawChordGroup);
+  //APIに対して保存依頼をPOSTリクエスト
+  //ルートのパスを取得
+  const response = await fetch('/api/v1/chords/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      data: newChordGroup,
+    }),
+  });
+
+  console.log(await response.json());
+
+  return {ok: true};
+}
+
+//コードグループを取得する関数
+export const getChordGroups = async (): Promise<{ ok: boolean, chordGroups?: ChordGroup[], error?: string }> => {
+  //apiに対してGETリクエスト
+  const response = await fetch('/api/v1/chords/get-all');
+  const data = await response.json();
+  console.log(data.result);
+  console.log(data.chordGroups);
+
+
+  return {ok: true, chordGroups: data.chordGroups};
+}
+
+//コードグループを更新する
+export const updateChordGroup = async (rawChordGroup: ChordGroup, nowEditChordGroupId: number): Promise<{ ok: boolean, error?: string }> => {
+  //新規作成
+  const chordGroup = getTypeChordGroup(rawChordGroup);
+  //apiに対してPOSTリクエスト
+  const response = await fetch('/api/v1/chords/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      data: chordGroup,
+      nowEditChordGroupId: nowEditChordGroupId,
+    }),
+  });
+
+  console.log(await response.json());
+
+  return {ok: true};
+}
+
+//コードグループを削除する
+export const delChordGroupFromDb = async (chordGroupId: number): Promise<{ ok: boolean, error?: string }> => {
+  //apiに対してPOSTリクエスト
+  const response = await fetch('/api/v1/chords/delete', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chordGroupId: chordGroupId,
+    }),
+  });
+
+  console.log(await response.json());
+
+  return {ok: true};
+}
+
+//型づけ処理
+const getTypeChordGroup = (rawChordGroup: any) => {
   //新規作成
   const newChords: Chord[] = [];
   const newChordGroup: ChordGroup = {
@@ -39,32 +111,9 @@ export const createChordGroup = async (rawChordGroup: any): Promise<{ ok: boolea
   console.log(JSON.stringify({
     data: newChordGroup,
   }));
-  //APIに対して保存依頼をPOSTリクエスト
-  //ルートのパスを取得
-  const response = await fetch('/api/v1/chords/add', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      data: newChordGroup,
-    }),
-  });
 
-  console.log(await response.json());
-
-  return {ok: true};
+  return newChordGroup;
 }
 
-//コードグループを取得する関数
-export const getChordGroups = async (): Promise<{ ok: boolean, chordGroups?: ChordGroup[], error?: string }> => {
-
-  //apiに対してGETリクエスト
-  const response = await fetch('/api/v1/chords/get-all');
-  const data = await response.json();
-  console.log(data.result);
-  console.log(data.chordGroups);
 
 
-  return {ok: true, chordGroups: data.chordGroups};
-}

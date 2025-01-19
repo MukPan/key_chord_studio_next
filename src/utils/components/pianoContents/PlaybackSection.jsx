@@ -1,14 +1,15 @@
 import { Component, useContext } from 'react'
 import { useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import {ChordGroupContext, KeySelectedContext} from "../../../app/home/page";
-import {createChordGroup} from "../../db/chords";
+import {ChordGroupContext, KeySelectedContext, NowEditChordGroupIdContext} from "../../../app/home/page";
+import {createChordGroup, updateChordGroup} from "../../db/chords";
 
 //再生欄
 export const PlaybackSection = () => {
   // console.log("Headerレンダリング");
   const { chordGroup, setChordGroup } = useContext(ChordGroupContext);
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext); //本
+  const { nowEditChordGroupId, setNowEditChordGroupId } = useContext(NowEditChordGroupIdContext);
 
 
   const styleDisplayCardDummy/* : { [key: string]: string }  */= {
@@ -102,9 +103,11 @@ export const PlaybackSection = () => {
   //データを保存
   const saveDisplayChords = async () => {
     await createChordGroup(chordGroup);
+  }
 
-
-
+  //データを更新
+  const updateDisplayChords = async () => {
+    await updateChordGroup(chordGroup, nowEditChordGroupId);
   }
 
   const playChordDisplayStyle = {
@@ -143,15 +146,18 @@ export const PlaybackSection = () => {
 
   return (
     <>
-      <div style={{marginLeft: "90.79px"}}>
-        {/*<Button variant="success" style={styleButton} onClick={playDisplay}>再生*/}
+      <div style={{marginLeft: "88.5px"}}>
+        {/*テキストボックス*/}
+        <input type="text" id="chordGroupName" style={{width: "200px", height: "30px", fontSize: "20px"}} placeholder="コード進行名" />
+
+        {/*ボタン*/}
         <Button variant="success" style={styleButton} onClick={playChordGroup}>再生
           <div>sキー</div>
         </Button>
         <Button variant="danger" style={styleButton} onClick={cleanDisplay}>リセット
           <div>cキー</div>
         </Button>
-        <Button variant="danger" style={styleButton} onClick={saveDisplayChords}>保存
+        <Button variant="danger" style={styleButton} onClick={updateDisplayChords}>保存
           <div>キー</div>
         </Button>
         <Button variant="danger" style={styleButton} onClick={saveDisplayChords}>新規保存

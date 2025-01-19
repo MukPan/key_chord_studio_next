@@ -10,8 +10,7 @@ export const KeyTempSelectedContext = createContext({});
 export const SortChordArrContext = createContext({});
 export const ChordGroupContext = createContext({});
 export const UserChordGroupListContext = createContext({});
-export const DraggingElemContext = createContext(<></>);
-
+export const NowEditChordGroupIdContext = createContext({});
 
 export default function Home() {
   document.oncontextmenu = () => false; //右クリック禁止
@@ -23,7 +22,7 @@ export default function Home() {
   // {"C": [0,0,0]}のようなオブジェクトを格納する配列
   const [chordGroup, setChordGroup] = useState([]);
   const [userChordGroupList, setUserChordGroupList] = useState([]);
-
+  const [nowEditChordGroupId, setNowEditChordGroupId] = useState(-1);
 
   return (
     <>
@@ -33,8 +32,10 @@ export default function Home() {
             <LinedDistsContext.Provider value={{linedDistsArr, setLinedDistsArr}}>
               <ChordGroupContext.Provider value={{chordGroup, setChordGroup}}>
                 <UserChordGroupListContext.Provider value={{userChordGroupList, setUserChordGroupList}}>
-                  <Header />
-                  <PianoContext />
+                  <NowEditChordGroupIdContext.Provider value={{nowEditChordGroupId, setNowEditChordGroupId}}>
+                    <Header />
+                    <PianoContext />
+                  </NowEditChordGroupIdContext.Provider>
                 </UserChordGroupListContext.Provider>
               </ChordGroupContext.Provider>
             </LinedDistsContext.Provider>

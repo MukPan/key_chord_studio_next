@@ -69,18 +69,8 @@ export const getChordGroups = async (): Promise<{ ok: boolean, chordGroups?: Cho
 }
 
 
+//レスポンスからchordGroupを取得して返す関数
+export const getChordGroupFromRes = (rawChordGroups: ChordGroup[]) => {
 
 
-
-//モデルの定義
-// model User {
-//   //PK
-//   id          Int          @id @default(autoincrement())
-//   //field
-//   //重複なし
-//   name        String
-//   password    String
-//   createdAt   DateTime     @default(now()) //作成日時の項目
-//   updatedAt   DateTime     @updatedAt //更新日時の項目
-//   chordGroups ChordGroup[]
-// }
+}

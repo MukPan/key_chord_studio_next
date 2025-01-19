@@ -6,6 +6,7 @@ export default function Popup(props) {
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
+    overflow: "auto",
   }
   const h2Style = {
     color: "rgba(50,50,64,0.7)",

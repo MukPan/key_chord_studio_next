@@ -7,14 +7,11 @@ export default function Header() {
   const headerStyle = {
     backgroundColor: "#13131F",
     height: "60px",
-
-
     display: "flex",
     alignItems: "center",
     borderBottom: "solid 1px #000000",
-
-
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    overflow: "auto",
   }
 
   const titleStyle = {
@@ -57,6 +54,7 @@ export default function Header() {
           height={30}
         />
       </label>
+      {/*ポップアップ*/}
       <Popup>
         <ChordGroupList/>
       </Popup>

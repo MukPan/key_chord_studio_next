@@ -11,6 +11,7 @@ export const SortChordArrContext = createContext({});
 export const ChordGroupContext = createContext({});
 export const UserChordGroupListContext = createContext({});
 export const NowEditChordGroupIdContext = createContext({});
+export const UpdateDbContext = createContext({});
 
 export default function Home() {
   document.oncontextmenu = () => false; //右クリック禁止
@@ -23,6 +24,7 @@ export default function Home() {
   const [chordGroup, setChordGroup] = useState([]);
   const [userChordGroupList, setUserChordGroupList] = useState([]);
   const [nowEditChordGroupId, setNowEditChordGroupId] = useState(-1);
+  const [updateDb, setUpdateDb] = useState(false);
 
   return (
     <>
@@ -33,8 +35,10 @@ export default function Home() {
               <ChordGroupContext.Provider value={{chordGroup, setChordGroup}}>
                 <UserChordGroupListContext.Provider value={{userChordGroupList, setUserChordGroupList}}>
                   <NowEditChordGroupIdContext.Provider value={{nowEditChordGroupId, setNowEditChordGroupId}}>
-                    <Header />
-                    <PianoContext />
+                    <UpdateDbContext.Provider value={{updateDb, setUpdateDb}}>
+                      <Header />
+                      <PianoContext />
+                    </UpdateDbContext.Provider>
                   </NowEditChordGroupIdContext.Provider>
                 </UserChordGroupListContext.Provider>
               </ChordGroupContext.Provider>

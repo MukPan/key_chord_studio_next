@@ -3,7 +3,7 @@ import {CSSProperties, useContext, useEffect, useState} from "react";
 import {
   ChordGroupContext,
   KeySelectedContext,
-  KeyTempSelectedContext, NowEditChordGroupIdContext,
+  KeyTempSelectedContext, NowEditChordGroupIdContext, UpdateDbContext,
   UserChordGroupListContext
 } from "../../app/home/page";
 import Image from "next/image";
@@ -62,7 +62,7 @@ export default function ChordGroupList() {
   const { isTempSelectedArr, setIsTempSelectedArr} = useContext(KeyTempSelectedContext); //仮
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext);
   const { nowEditChordGroupId, setNowEditChordGroupId } = useContext(NowEditChordGroupIdContext);
-  const [updateDb, setUpdateDb] = useState(false);
+  const { updateDb, setUpdateDb } = useContext(UpdateDbContext);
 
   useEffect(() => {
     getChordGroups().then((res) => {

@@ -1,7 +1,12 @@
 import { Component, useContext } from 'react'
 import { useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import {ChordGroupContext, KeySelectedContext, NowEditChordGroupIdContext} from "../../../app/home/page";
+import {
+  ChordGroupContext,
+  KeySelectedContext,
+  NowEditChordGroupIdContext,
+  UpdateDbContext
+} from "../../../app/home/page";
 import {createChordGroup, updateChordGroup} from "../../db/chords";
 
 //再生欄
@@ -10,6 +15,7 @@ export const PlaybackSection = () => {
   const { chordGroup, setChordGroup } = useContext(ChordGroupContext);
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext); //本
   const { nowEditChordGroupId, setNowEditChordGroupId } = useContext(NowEditChordGroupIdContext);
+  const { updateDb, setUpdateDb } = useContext(UpdateDbContext);
 
 
   const styleDisplayCardDummy/* : { [key: string]: string }  */= {
@@ -102,12 +108,25 @@ export const PlaybackSection = () => {
 
   //データを保存
   const saveDisplayChords = async () => {
+    if (!confirm("このコード進行を新規保存しますか？")) {
+      return;
+    }
     await createChordGroup(chordGroup);
+    setUpdateDb((prev) => !prev);
+    alert("コード進行を新規保存しました。");
   }
 
   //データを更新
   const updateDisplayChords = async () => {
+    //編集中のコードグループがない場合、新規保存を促す
+    if (nowEditChordGroupId === -1) {
+      await saveDisplayChords();
+      return;
+    }
+
     await updateChordGroup(chordGroup, nowEditChordGroupId);
+    setUpdateDb((prev) => !prev);
+    alert("コード進行を保存しました。");
   }
 
   const playChordDisplayStyle = {

@@ -12,6 +12,7 @@ export interface Chord {
 export interface ChordGroup {
   name: string,
   chords: Chord[],
+  id?: number,
 }
 
 
@@ -66,11 +67,4 @@ export const getChordGroups = async (): Promise<{ ok: boolean, chordGroups?: Cho
 
 
   return {ok: true, chordGroups: data.chordGroups};
-}
-
-
-//レスポンスからchordGroupを取得して返す関数
-export const getChordGroupFromRes = (rawChordGroups: ChordGroup[]) => {
-
-
 }

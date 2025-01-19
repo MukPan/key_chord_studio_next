@@ -154,6 +154,9 @@ export const PlaybackSection = () => {
         <Button variant="danger" style={styleButton} onClick={saveDisplayChords}>保存
           <div>キー</div>
         </Button>
+        <Button variant="danger" style={styleButton} onClick={saveDisplayChords}>新規保存
+          <div>キー</div>
+        </Button>
       </div>
       {/*再生コード表示エリア*/}
       <div style={playChordAreaStyle}>

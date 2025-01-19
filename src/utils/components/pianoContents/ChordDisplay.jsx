@@ -14,7 +14,6 @@ export const ChordDisplay = (props) => {
   } = props;
 
   let DraggingElem;
-
   //ドラッグ中のindexを保存
   let prevDragIndex;
 

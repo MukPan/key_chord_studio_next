@@ -7,7 +7,7 @@ import {
   UserChordGroupListContext
 } from "../../app/home/page";
 import Image from "next/image";
-import {addToDisplay} from "../func/addToDisplay";
+import {addAllToDisplay} from "../func/addAllToDisplay";
 
 export default function ChordGroupList() {
 
@@ -63,6 +63,7 @@ export default function ChordGroupList() {
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext);
 
 
+
   useEffect(() => {
     getChordGroups().then((res) => {
       //コードグループリストを新規作成
@@ -91,7 +92,8 @@ export default function ChordGroupList() {
     //コード読み込み
     chordGroup.chords.forEach((chord) => {
       console.log(chord);
-      addToDisplay(
+      //全てのコードをディスプレイに追加
+      addAllToDisplay(
         chord,
         setChordGroup,
         isTempSelectedArr,

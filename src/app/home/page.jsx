@@ -23,7 +23,6 @@ export default function Home() {
   // {"C": [0,0,0]}のようなオブジェクトを格納する配列
   const [chordGroup, setChordGroup] = useState([]);
   const [userChordGroupList, setUserChordGroupList] = useState([]);
-  const [draggingElem, setDraggingElem] = useState(<></>);
 
 
   return (
@@ -34,11 +33,9 @@ export default function Home() {
             <LinedDistsContext.Provider value={{linedDistsArr, setLinedDistsArr}}>
               <ChordGroupContext.Provider value={{chordGroup, setChordGroup}}>
                 <UserChordGroupListContext.Provider value={{userChordGroupList, setUserChordGroupList}}>
-                  <DraggingElemContext.Provider value={{draggingElem, setDraggingElem}}>
-                    <Header />
-                    <PianoContext />
-                    </DraggingElemContext.Provider>
-                  </UserChordGroupListContext.Provider>
+                  <Header />
+                  <PianoContext />
+                </UserChordGroupListContext.Provider>
               </ChordGroupContext.Provider>
             </LinedDistsContext.Provider>
           </KeyTempSelectedContext.Provider>

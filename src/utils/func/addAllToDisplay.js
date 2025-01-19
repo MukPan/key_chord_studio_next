@@ -1,7 +1,13 @@
 
+//G変数
+let DraggingElem;
+//ドラッグ中のindexを保存
+let prevDragIndex;
+
+let globalSetChordGroup;
 
 //ディスプレイに追加
-export const addToDisplay = (
+export const addAllToDisplay = (
   chordObj,
   setChordGroup,
   isTempSelectedArr,
@@ -9,6 +15,7 @@ export const addToDisplay = (
   isSelectedArr,
   setIsSelectedArr
 ) => { //カードがクリックされたら、ヘッダーにクリックされたカードの要素名を追加。 ヘッダーを親要素としてspanタグを子要素に加えて追加していく。
+  globalSetChordGroup = setChordGroup;
   const chordName = chordObj.name;
   // const targetOfHeader = document.getElementById("lined-chords");
   const createDiv = document.createElement("div"); //ヘッダーに表示する文字ごとにdiv要素を作る
@@ -17,7 +24,7 @@ export const addToDisplay = (
   createDiv.addEventListener("mouseenter", () => hoverSelectedChord(createDiv, isTempSelectedArr, setIsTempSelectedArr));
   createDiv.addEventListener("mouseleave", () => nonHoverSelectedChord(createDiv));
   createDiv.addEventListener("dblclick", () => dbClickSelectedChord(isTempSelectedArr, setIsSelectedArr));
-  createDiv.addEventListener("click", () => playThisChord());
+  createDiv.addEventListener("click", () => playThisChord(setIsTempSelectedArr));
   //////再生欄に追加する作業
   const liElem = document.createElement("li"); //ソート用のリスト、この中に下のdiv要素を追加する
   liElem.draggable = true;
@@ -60,7 +67,7 @@ const dbClickSelectedChord = (thisDists, setIsSelectedArr) => {
 }
 
 /* もう一度再生 */
-const playThisChord = () => {
+const playThisChord = (setIsTempSelectedArr) => {
   setIsTempSelectedArr((prev) => [...prev]);
 }
 
@@ -110,7 +117,7 @@ const addDragFuncs = (elem) => { //4つの関数を付与
     console.log(nowIndex);
 
     //previndexの要素を削除し、nowindexに挿入
-    setChordGroup((prev) => {
+    globalSetChordGroup((prev) => {
       const newChordGroupList = [...prev];
       //削除
       const [removed] = newChordGroupList.splice(prevDragIndex, 1);

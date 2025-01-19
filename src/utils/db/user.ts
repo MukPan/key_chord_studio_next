@@ -1,4 +1,5 @@
 import {Prisma, PrismaClient} from "@prisma/client";
+import {NextRequest} from "next/server";
 
 //初期化
 const prisma = new PrismaClient();
@@ -85,7 +86,17 @@ export const registUser = async (userName: string, password: string): Promise<{ 
   return {
     ok: true,
   }
-
-
-
 }
+
+//reqestのcookieからログイン中のユーザIDを取得
+export const getLoginUserId = async (request: NextRequest) => {
+  //cookieからユーザ名を取得
+  const userName = request.cookies.get("loginUserName")?.value ?? "";
+
+  //ユーザ名のidを取得
+  return (await prisma.user.findFirst({
+    where: {
+      name: userName,
+    }
+  }))?.id ?? -1;
+};

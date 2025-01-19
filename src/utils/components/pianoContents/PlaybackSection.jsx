@@ -1,14 +1,21 @@
 import { Component, useContext } from 'react'
 import { useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import {ChordGroupContext, KeySelectedContext} from "../../../app/home/page";
-import {createChordGroup} from "../../db/chords";
+import {
+  ChordGroupContext,
+  KeySelectedContext,
+  NowEditChordGroupIdContext,
+  UpdateDbContext
+} from "../../../app/home/page";
+import {createChordGroup, updateChordGroup} from "../../db/chords";
 
 //再生欄
 export const PlaybackSection = () => {
   // console.log("Headerレンダリング");
-  const { chordGroupList, setChordGroupList } = useContext(ChordGroupContext);
+  const { chordGroup, setChordGroup } = useContext(ChordGroupContext);
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext); //本
+  const { nowEditChordGroupId, setNowEditChordGroupId } = useContext(NowEditChordGroupIdContext);
+  const { updateDb, setUpdateDb } = useContext(UpdateDbContext);
 
 
   const styleDisplayCardDummy/* : { [key: string]: string }  */= {
@@ -64,7 +71,7 @@ export const PlaybackSection = () => {
     while (linedChords.firstChild.id !== "dummy") {
       linedChords.removeChild(linedChords.firstChild);
     }
-    setChordGroupList(() => []);
+    setChordGroup(() => []);
   }
 
 
@@ -73,24 +80,24 @@ export const PlaybackSection = () => {
     console.log("関数playChordGroup")
     //現在音を鳴らしているカード
     const nowIndexArr = document.getElementsByClassName("DisplayCards");
-    for(let i= 0; i < chordGroupList.length; i++) { //DisplayCardを左から順に取得して処理をしていく
+    for(let i= 0; i < chordGroup.length; i++) { //DisplayCardを左から順に取得して処理をしていく
       //始点処理
       if (i === 0) {
         nowIndexArr[i].style.backgroundColor = "orange";
-        setIsSelectedArr(() => [...chordGroupList[i].dists]);
+        setIsSelectedArr(() => [...chordGroup[i].dists]);
       //2〜(n-1)番目処理
-      }else if (i < chordGroupList.length - 1) { //初回、最終回以外の処理はここ
+      }else if (i < chordGroup.length - 1) { //初回、最終回以外の処理はここ
         setTimeout(() => {
           nowIndexArr[i-1].style.backgroundColor = "#FFFFFF";
           nowIndexArr[i].style.backgroundColor = "orange";
-          setIsSelectedArr(() => [...chordGroupList[i].dists]);
+          setIsSelectedArr(() => [...chordGroup[i].dists]);
         }, i * 1000); //二つ目は１秒、三つ目は２秒待つ... とすることで１秒ごと動作させる
       //n番目(終点)処理
       } else { //一番後ろのディスプレイカードの処理
         setTimeout(() => {
           nowIndexArr[i-1].style.backgroundColor = "#FFFFFF";
           nowIndexArr[i].style.backgroundColor = "orange";
-          setIsSelectedArr(() => [...chordGroupList[i].dists]);
+          setIsSelectedArr(() => [...chordGroup[i].dists]);
         }, i * 1000); //二つ目は１秒、三つ目は２秒待つ... とすることで１秒ごと動作させる
         setTimeout(() => {
           nowIndexArr[i].style.backgroundColor = "#FFFFFF";
@@ -101,10 +108,27 @@ export const PlaybackSection = () => {
 
   //データを保存
   const saveDisplayChords = async () => {
-    await createChordGroup(chordGroupList);
+    if (!confirm("このコード進行を新規保存しますか？")) {
+      return;
+    }
+    //コード進行名を取得
+    const chordGroupName = getChordGroupName();
+    await createChordGroup(chordGroup, chordGroupName);
+    setUpdateDb((prev) => !prev);
+    alert("コード進行を新規保存しました。");
+  }
 
-
-
+  //データを更新
+  const updateDisplayChords = async () => {
+    //編集中のコードグループがない場合、新規保存を促す
+    if (nowEditChordGroupId === -1) {
+      await saveDisplayChords();
+      return;
+    }
+    const chordGroupName = getChordGroupName();
+    await updateChordGroup(chordGroup, chordGroupName, nowEditChordGroupId);
+    setUpdateDb((prev) => !prev);
+    alert("コード進行を保存しました。");
   }
 
   const playChordDisplayStyle = {
@@ -141,17 +165,29 @@ export const PlaybackSection = () => {
     padding: "40px 0",
   }
 
+  //テキストボックスを取得して、コード進行名を取得する関数
+  const getChordGroupName = () => {
+    const chordGroupName = document.getElementById("chordGroupName");
+    return chordGroupName.value;
+  }
+
   return (
     <>
-      <div style={{marginLeft: "90.79px"}}>
-        {/*<Button variant="success" style={styleButton} onClick={playDisplay}>再生*/}
+      <div style={{marginLeft: "88.5px"}}>
+        {/*テキストボックス*/}
+        <input type="text" id="chordGroupName" style={{width: "200px", height: "30px", fontSize: "20px"}} placeholder="コード進行名" />
+
+        {/*ボタン*/}
         <Button variant="success" style={styleButton} onClick={playChordGroup}>再生
           <div>sキー</div>
         </Button>
         <Button variant="danger" style={styleButton} onClick={cleanDisplay}>リセット
           <div>cキー</div>
         </Button>
-        <Button variant="danger" style={styleButton} onClick={saveDisplayChords}>保存
+        <Button variant="danger" style={styleButton} onClick={updateDisplayChords}>保存
+          <div>キー</div>
+        </Button>
+        <Button variant="danger" style={styleButton} onClick={saveDisplayChords}>新規保存
           <div>キー</div>
         </Button>
       </div>

@@ -14,11 +14,10 @@ export const ChordDisplay = (props) => {
   } = props;
 
   let DraggingElem;
-
   //ドラッグ中のindexを保存
   let prevDragIndex;
 
-  const { chordGroupList, setChordGroupList } = useContext(ChordGroupContext);
+  const { chordGroup, setChordGroup } = useContext(ChordGroupContext);
 
   //ルート配列
   const RootsArr = [
@@ -493,7 +492,7 @@ export const ChordDisplay = (props) => {
       console.log(nowIndex);
 
       //previndexの要素を削除し、nowindexに挿入
-      setChordGroupList((prev) => {
+      setChordGroup((prev) => {
         const newChordGroupList = [...prev];
         //削除
         const [removed] = newChordGroupList.splice(prevDragIndex, 1);
@@ -543,7 +542,7 @@ export const ChordDisplay = (props) => {
     const delIndex = getNowIndex(thisLiChord);
     thisLiChord.remove();
     //リストからも削除
-    setChordGroupList((prev) => {
+    setChordGroup((prev) => {
       const newChordGroupList = [...prev];
       newChordGroupList.splice(delIndex, 1);
       return newChordGroupList;
@@ -570,7 +569,7 @@ export const ChordDisplay = (props) => {
     //////
 
     //1つのコードを保存
-    setChordGroupList((prev) => {
+    setChordGroup((prev) => {
       prev = [...prev, {chord: chord, dists: isTempSelectedArr}];
       console.log(prev);
       return prev;
@@ -607,7 +606,7 @@ export const ChordDisplay = (props) => {
     else if (chord.includes("B")) mainChordsStyle["backgroundColor"] = "#FFE0F0";
     //----コードによって表示する背景を変える↑--------
     const elem = <span key={i}
-  class="main"
+  // class="main"
   style={mainChordsStyle}
   className="main"
   onMouseEnter={(e) => {

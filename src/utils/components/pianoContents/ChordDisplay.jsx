@@ -606,7 +606,7 @@ export const ChordDisplay = (props) => {
     else if (chord.includes("B")) mainChordsStyle["backgroundColor"] = "#FFE0F0";
     //----コードによって表示する背景を変える↑--------
     const elem = <span key={i}
-  class="main"
+  // class="main"
   style={mainChordsStyle}
   className="main"
   onMouseEnter={(e) => {

@@ -17,9 +17,10 @@ export interface ChordGroup {
 
 
 //コードグループを登録する関数
-export const createChordGroup = async (rawChordGroup: any): Promise<{ ok: boolean, error?: string }> => {
+export const createChordGroup = async (rawChordGroup: any, chordGroupName: any): Promise<{ ok: boolean, error?: string }> => {
+
   //新規作成
-  const newChordGroup = getTypeChordGroup(rawChordGroup);
+  const newChordGroup = getTypeChordGroup(rawChordGroup, chordGroupName);
   //APIに対して保存依頼をPOSTリクエスト
   //ルートのパスを取得
   const response = await fetch('/api/v1/chords/add', {
@@ -50,9 +51,9 @@ export const getChordGroups = async (): Promise<{ ok: boolean, chordGroups?: Cho
 }
 
 //コードグループを更新する
-export const updateChordGroup = async (rawChordGroup: ChordGroup, nowEditChordGroupId: number): Promise<{ ok: boolean, error?: string }> => {
+export const updateChordGroup = async (rawChordGroup: any, chordGroupName: any, nowEditChordGroupId: number): Promise<{ ok: boolean, error?: string }> => {
   //新規作成
-  const chordGroup = getTypeChordGroup(rawChordGroup);
+  const chordGroup = getTypeChordGroup(rawChordGroup, chordGroupName);
   //apiに対してPOSTリクエスト
   const response = await fetch('/api/v1/chords/update', {
     method: 'POST',
@@ -89,11 +90,17 @@ export const delChordGroupFromDb = async (chordGroupId: number): Promise<{ ok: b
 }
 
 //型づけ処理
-const getTypeChordGroup = (rawChordGroup: any) => {
+const getTypeChordGroup = (rawChordGroup: any, chordGroupName: any) => {
+  //グループ名の型づけ処理
+  let newChordGroupName: string = chordGroupName ?? "無題";
+  if (chordGroupName === "") {
+    newChordGroupName = "無題";
+  }
+
   //新規作成
   const newChords: Chord[] = [];
   const newChordGroup: ChordGroup = {
-    name: "無題",
+    name: newChordGroupName,
     chords: newChords,
   }
 

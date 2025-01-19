@@ -37,8 +37,9 @@ export default function ChordGroupList() {
   }
 
   const previewStyle = {
-    fontSize: "30px",
-    color: "#666",
+    fontSize: "24px",
+    marginTop: "5px",
+    color: "#818181",
   }
 
   const iconStyle = {
@@ -118,10 +119,20 @@ export default function ChordGroupList() {
         setIsSelectedArr
       );
     });
+
+    //テキストボックスを編集中コードグループ名に変更
+    const chordGroupName = document.getElementById("chordGroupName");
+    chordGroupName.value = chordGroup.name;
   }
 
   //コード進行削除
   const delChordGroup = (chordGroup) => {
+    //選択したコード進行が編集中の場合、削除できない
+    if (nowEditChordGroupId === chordGroup.id) {
+      alert("編集中のコード進行は削除できません。");
+      return;
+    }
+
     //確認ダイアログを出す
     if (!confirm("このコード進行を削除しますか？\nこの操作は取り消せません。")) {
       console.log("キャンセル");
@@ -161,8 +172,10 @@ export default function ChordGroupList() {
           chordNamesPreview += "..."
         }
 
+        //ランダムなキーを生成(エラー対策)
+
         return (
-          <li style={liStyle}>
+          <li style={liStyle} key={chordGroup.id}>
             {/*左*/}
             <div>
               {/*編集アイコン*/}

@@ -111,7 +111,9 @@ export const PlaybackSection = () => {
     if (!confirm("このコード進行を新規保存しますか？")) {
       return;
     }
-    await createChordGroup(chordGroup);
+    //コード進行名を取得
+    const chordGroupName = getChordGroupName();
+    await createChordGroup(chordGroup, chordGroupName);
     setUpdateDb((prev) => !prev);
     alert("コード進行を新規保存しました。");
   }
@@ -123,8 +125,8 @@ export const PlaybackSection = () => {
       await saveDisplayChords();
       return;
     }
-
-    await updateChordGroup(chordGroup, nowEditChordGroupId);
+    const chordGroupName = getChordGroupName();
+    await updateChordGroup(chordGroup, chordGroupName, nowEditChordGroupId);
     setUpdateDb((prev) => !prev);
     alert("コード進行を保存しました。");
   }
@@ -161,6 +163,12 @@ export const PlaybackSection = () => {
     fontWeight: "bold",
     height: "100%",
     padding: "40px 0",
+  }
+
+  //テキストボックスを取得して、コード進行名を取得する関数
+  const getChordGroupName = () => {
+    const chordGroupName = document.getElementById("chordGroupName");
+    return chordGroupName.value;
   }
 
   return (

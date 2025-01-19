@@ -89,6 +89,18 @@ export default function ChordGroupList() {
     // console.log(chordGroup.id);
     // console.log(chordGroup.chords);
 
+    //Dummy以外のディスプレイのコードを全て削除
+    const linedChords = document.getElementById("lined-chords");
+    //親要素のid="dummy"以外の子要素を全て削除
+    while (linedChords.firstChild.id !== "dummy") {
+      linedChords.removeChild(linedChords.firstChild);
+    }
+    //コードグループをリセット
+    setIsTempSelectedArr([]);
+    setIsSelectedArr([]);
+    setChordGroup([]);
+
+
     //コード読み込み
     chordGroup.chords.forEach((chord) => {
       console.log(chord);

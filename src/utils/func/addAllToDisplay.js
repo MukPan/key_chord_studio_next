@@ -16,14 +16,19 @@ export const addAllToDisplay = (
   setIsSelectedArr
 ) => { //カードがクリックされたら、ヘッダーにクリックされたカードの要素名を追加。 ヘッダーを親要素としてspanタグを子要素に加えて追加していく。
   globalSetChordGroup = setChordGroup;
+  //chordObjから色々取り出す
   const chordName = chordObj.name;
+  const dists = chordObj.keys.map((key) => key.keyIndex);
+  // const dists = chordObj.keys.;
+  console.log(dists);
+
   // const targetOfHeader = document.getElementById("lined-chords");
   const createDiv = document.createElement("div"); //ヘッダーに表示する文字ごとにdiv要素を作る
   createDiv.className = "DisplayCards"; //クラス名をDisplayCardsにしてcssでデザインを指定.
   createDiv.innerHTML = chordName;
-  createDiv.addEventListener("mouseenter", () => hoverSelectedChord(createDiv, isTempSelectedArr, setIsTempSelectedArr));
+  createDiv.addEventListener("mouseenter", () => hoverSelectedChord(createDiv, dists, setIsTempSelectedArr));
   createDiv.addEventListener("mouseleave", () => nonHoverSelectedChord(createDiv));
-  createDiv.addEventListener("dblclick", () => dbClickSelectedChord(isTempSelectedArr, setIsSelectedArr));
+  createDiv.addEventListener("dblclick", () => dbClickSelectedChord(dists, setIsSelectedArr));
   createDiv.addEventListener("click", () => playThisChord(setIsTempSelectedArr));
   //////再生欄に追加する作業
   const liElem = document.createElement("li"); //ソート用のリスト、この中に下のdiv要素を追加する
@@ -35,7 +40,7 @@ export const addAllToDisplay = (
 
   //1つのコードを保存
   setChordGroup((prev) => {
-    prev = [...prev, {chord: chordName, dists: isTempSelectedArr}];
+    prev = [...prev, {chord: chordName, dists: [...dists]}];
     console.log(prev);
     return prev;
   });

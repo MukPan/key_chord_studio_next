@@ -1,23 +1,33 @@
 import Image from 'next/image';
+import Popup from "./Popup";
+import ChordGroupList from "./ChordGroupList.jsx";
 
 export default function Header() {
 
   const headerStyle = {
     backgroundColor: "#13131F",
     height: "60px",
-    color: "#ff8fcc",
-    fontSize: "45px",
+
+
     display: "flex",
     alignItems: "center",
     borderBottom: "solid 1px #000000",
+
+
+    justifyContent: "space-between"
+  }
+
+  const titleStyle = {
+    color: "#ff8fcc",
+    fontSize: "45px",
     fontFamily: "Courier New",
     paddingLeft: "35px",
-    justifyContent: "space-between"
   }
 
   const headerSpanStyle = {
     marginTop: "15px",
   }
+
 
   const iconCircleStyle = {
     width: "48px",
@@ -33,17 +43,23 @@ export default function Header() {
 
   return (
     <header style={headerStyle}>
-      <div>
+      {/*タイトル*/}
+      <div style={titleStyle}>
         <span style={headerSpanStyle}>Key Chord Studio</span>
       </div>
-      <button style={iconCircleStyle}>
+      {/*フォルダアイコン*/}
+      <input type="checkbox" id="popup"/>
+      <label style={iconCircleStyle} className="popup-open" htmlFor="popup">
         <Image
           src="/image/folder_icon.png"
           alt="icon"
           width={30}
           height={30}
         />
-      </button>
+      </label>
+      <Popup>
+        <ChordGroupList/>
+      </Popup>
     </header>
   )
 }

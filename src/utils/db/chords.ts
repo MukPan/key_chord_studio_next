@@ -1,4 +1,5 @@
 //DBに保存するための型宣言
+
 export interface Key {
   keyIndex: number;
 }
@@ -52,8 +53,24 @@ export const createChordGroup = async (rawChordGroup: any): Promise<{ ok: boolea
   console.log(await response.json());
 
   return {ok: true};
-
 }
+
+//コードグループを取得する関数
+export const getChordGroups = async (): Promise<{ ok: boolean, chordGroups?: ChordGroup[], error?: string }> => {
+
+  //apiに対してGETリクエスト
+  const response = await fetch('/api/v1/chords/get-all');
+  const data = await response.json();
+  console.log(data.result);
+  console.log(data.chordGroups);
+
+
+  return {ok: true, chordGroups: data.chordGroups};
+}
+
+
+
+
 
 //モデルの定義
 // model User {

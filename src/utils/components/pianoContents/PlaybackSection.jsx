@@ -7,7 +7,7 @@ import {createChordGroup} from "../../db/chords";
 //再生欄
 export const PlaybackSection = () => {
   // console.log("Headerレンダリング");
-  const { chordGroupList, setChordGroupList } = useContext(ChordGroupContext);
+  const { chordGroup, setChordGroup } = useContext(ChordGroupContext);
   const { isSelectedArr, setIsSelectedArr } = useContext(KeySelectedContext); //本
 
 
@@ -64,7 +64,7 @@ export const PlaybackSection = () => {
     while (linedChords.firstChild.id !== "dummy") {
       linedChords.removeChild(linedChords.firstChild);
     }
-    setChordGroupList(() => []);
+    setChordGroup(() => []);
   }
 
 
@@ -73,24 +73,24 @@ export const PlaybackSection = () => {
     console.log("関数playChordGroup")
     //現在音を鳴らしているカード
     const nowIndexArr = document.getElementsByClassName("DisplayCards");
-    for(let i= 0; i < chordGroupList.length; i++) { //DisplayCardを左から順に取得して処理をしていく
+    for(let i= 0; i < chordGroup.length; i++) { //DisplayCardを左から順に取得して処理をしていく
       //始点処理
       if (i === 0) {
         nowIndexArr[i].style.backgroundColor = "orange";
-        setIsSelectedArr(() => [...chordGroupList[i].dists]);
+        setIsSelectedArr(() => [...chordGroup[i].dists]);
       //2〜(n-1)番目処理
-      }else if (i < chordGroupList.length - 1) { //初回、最終回以外の処理はここ
+      }else if (i < chordGroup.length - 1) { //初回、最終回以外の処理はここ
         setTimeout(() => {
           nowIndexArr[i-1].style.backgroundColor = "#FFFFFF";
           nowIndexArr[i].style.backgroundColor = "orange";
-          setIsSelectedArr(() => [...chordGroupList[i].dists]);
+          setIsSelectedArr(() => [...chordGroup[i].dists]);
         }, i * 1000); //二つ目は１秒、三つ目は２秒待つ... とすることで１秒ごと動作させる
       //n番目(終点)処理
       } else { //一番後ろのディスプレイカードの処理
         setTimeout(() => {
           nowIndexArr[i-1].style.backgroundColor = "#FFFFFF";
           nowIndexArr[i].style.backgroundColor = "orange";
-          setIsSelectedArr(() => [...chordGroupList[i].dists]);
+          setIsSelectedArr(() => [...chordGroup[i].dists]);
         }, i * 1000); //二つ目は１秒、三つ目は２秒待つ... とすることで１秒ごと動作させる
         setTimeout(() => {
           nowIndexArr[i].style.backgroundColor = "#FFFFFF";
@@ -101,7 +101,7 @@ export const PlaybackSection = () => {
 
   //データを保存
   const saveDisplayChords = async () => {
-    await createChordGroup(chordGroupList);
+    await createChordGroup(chordGroup);
 
 
 
